@@ -18,8 +18,6 @@ after_build:
     dir $env:APPVEYOR_BUILD_FOLDER\Artifacts\*.exe | Get-FileHash -Algorithm sha1 | Format-Table > $env:APPVEYOR_BUILD_FOLDER\Artifacts\SHA1SUM.txt
 
     dir $env:APPVEYOR_BUILD_FOLDER\artifacts\*.exe | Get-FileHash -Algorithm sha256 | Format-Table > $env:APPVEYOR_BUILD_FOLDER\Artifacts\SHA256SUM.txt
-
-    dir $env:APPVEYOR_BUILD_FOLDER\artifacts\*.exe | Get-FileHash -Algorithm md5 | Format-Table > $env:APPVEYOR_BUILD_FOLDER\Artifacts\MD5SUM.txt
 test: off
 artifacts:
 - path: Artifacts\*.exe
@@ -30,7 +28,18 @@ deploy:
 - provider: GitHub
   tag: $(APPVEYOR_BUILD_VERSION)
   release: Npiperelay Release - $(APPVEYOR_BUILD_VERSION)
-  description: 'Automated Build & Release.\nBuild Commit : $(APPVEYOR_REPO_COMMIT).\nBuild Version : $(APPVEYOR_BUILD_VERSION)\n'
+  description: >-
+       Automated Build & Release\n
+       ---\n
+       * Built for $(APPVEYOR_REPO_COMMIT)\n
+       * For Windows 10 64 Bit Only.\n
+       ```\n
+       Built with Commit        : $(APPVEYOR_REPO_COMMIT)\n
+       Build Version            : $(APPVEYOR_BUILD_VERSION)\n
+       Commit Message           : $(APPVEYOR_REPO_COMMIT_MESSAGE)\n
+       Committed on             : $(APPVEYOR_REPO_COMMIT_TIMESTAMP)\n
+       Built on Worker Image    : $(APPVEYOR_BUILD_WORKER_IMAGE)\n
+       ```\n
   auth_token:
     secure: RsXR4gluSnjX2LJ2wudRQZ4NCVnndED3+V+28EMouoWov7ytdzIycF0mSjE8U18v
   prerelease: true
