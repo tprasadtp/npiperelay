@@ -1,0 +1,37 @@
+version: 1.0.{branch}.{build}
+skip_tags: true
+image: Visual Studio 2017
+clone_folder: C:\Projects
+environment:
+  GOOS: windows
+install:
+- ps: go get -d github.com/tprasadtp/npiperelay
+
+before_build:
+- ps: New-Item -ItemType directory -Path .\Artifacts
+
+build_script:
+- ps: go build -o .\Artifacts\npiperelay.exe
+
+after_build:
+- ps: >-
+    dir $env:APPVEYOR_BUILD_FOLDER\Artifacts\*.exe | Get-FileHash -Algorithm sha1 | Format-Table > $env:APPVEYOR_BUILD_FOLDER\Artifacts\SHA1SUM.txt
+
+    dir $env:APPVEYOR_BUILD_FOLDER\artifacts\*.exe | Get-FileHash -Algorithm sha256 | Format-Table > $env:APPVEYOR_BUILD_FOLDER\Artifacts\SHA256SUM.txt
+
+    dir $env:APPVEYOR_BUILD_FOLDER\artifacts\*.exe | Get-FileHash -Algorithm md5 | Format-Table > $env:APPVEYOR_BUILD_FOLDER\Artifacts\MD5SUM.txt
+test: off
+artifacts:
+- path: Artifacts\*.exe
+  name: Github Releases
+- path: Artifacts\*.txt
+  name: Github Releases
+deploy:
+- provider: GitHub
+  tag: $(APPVEYOR_BUILD_VERSION)
+  release: Npiperelay Release - $(APPVEYOR_BUILD_VERSION)
+  description: 'Automated Build & Release.\nBuild Commit : $(APPVEYOR_REPO_COMMIT).\nBuild Version : $(APPVEYOR_BUILD_VERSION)\n'
+  auth_token:
+    secure: RsXR4gluSnjX2LJ2wudRQZ4NCVnndED3+V+28EMouoWov7ytdzIycF0mSjE8U18v
+  prerelease: true
+  force_update: true

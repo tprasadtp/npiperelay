@@ -10,11 +10,9 @@ For example, you can:
 * Connect interactively to a Hyper-V Linux VM's serial console
 * Use gdb to connect to debug the kernel of a Hyper-V Linux VM
 
-Let me know on Twitter ([@gigastarks](https://twitter.com/gigastarks)) if you come up with more interesting uses.
+[![Build status](https://ci.appveyor.com/api/projects/status/0vtcsyno27bjxe9i?svg=true)](https://ci.appveyor.com/project/tprasadtp/npiperelay)
 
-# Installation
-
-Binaries for npiperelay are not currently available. You have to build from source. With Go, this is not too difficult.
+# Building
 
 Basic steps:
 
